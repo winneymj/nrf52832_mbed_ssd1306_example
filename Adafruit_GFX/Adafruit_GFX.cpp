@@ -3,6 +3,9 @@
 #include "Adafruit_GFX.h"
 #include "font5x7.h"
 
+// define the Serial object
+Serial pc(USBTX, USBRX);
+
 /**************************************************************************/
 /*!
   @brief  Instantiate a GFX context for graphics! Can only be done by a superclass
