@@ -3,8 +3,6 @@
         {
             "includePath": [
                 "${workspaceFolder}",
-                "${workspaceFolder}/Adafruit_GFX",
-                "${workspaceFolder}/Adafruit_GFX/fonts",
                 "${workspaceFolder}/mbed-os",
                 "${workspaceFolder}/mbed-os/cmsis",
                 "${workspaceFolder}/mbed-os/cmsis/TARGET_CORTEX_M",
@@ -288,7 +286,10 @@
                 "${workspaceFolder}/mbed-os/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_SDK_14_2/libraries/queue",
                 "${workspaceFolder}/mbed-os/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_SDK_14_2/libraries/strerror",
                 "${workspaceFolder}/mbed-os/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_SDK_14_2/libraries/util",
-                "${workspaceFolder}/source"            ],
+                "${workspaceFolder}/source",
+                "${workspaceFolder}/lv_drivers",
+                "${workspaceFolder}/lv_drivers/display"
+            ],
             "name": "Windows",
             "defines": [
                 "TARGET_MCU_NRF52832",
