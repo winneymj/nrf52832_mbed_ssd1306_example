@@ -28,17 +28,18 @@
 /*------------
  *  Common
  *------------*/
-#define LV_DRV_DISP_INCLUDE         <common.h>           /*Dummy include by default*/
-// #define LV_DRV_DISP_INCLUDE         <stdint.h>           /*Dummy include by default*/
-#define LV_DRV_DISP_CMD_DATA(val)  /*pin_x_set(val)*/    /*Set the command/data pin to 'val'*/
-#define LV_DRV_DISP_RST(val)       /*pin_x_set(val)*/    /*Set the reset pin to 'val'*/
+#define LV_DRV_DISP_INCLUDE         <common.h>         /*Dummy include by default*/
+#define LV_DRV_DISP_CMD_DATA(val)  pin_cmd_set(val)    /*Set the command/data pin to 'val'*/
+#define LV_DRV_DISP_RST(val)       pin_rst_set(val)    /*Set the reset pin to 'val'*/
 
 /*---------
  *  SPI
  *---------*/
-#define LV_DRV_DISP_SPI_CS(val)          /*spi_cs_set(val)*/     /*Set the SPI's Chip select to 'val'*/
-#define LV_DRV_DISP_SPI_WR_BYTE(data)    /*spi_wr(data)*/        /*Write a byte the SPI bus*/
-#define LV_DRV_DISP_SPI_WR_ARRAY(adr, n) /*spi_wr_mem(adr, n)*/  /*Write 'n' bytes to SPI bus from 'adr'*/
+#define LV_DRV_DISP_SPI_CS(val)           spi_cs_set(val)      /*Set the SPI's Chip select to 'val'*/
+#define LV_DRV_DISP_SPI_WR_BYTE(data)     spi_wr(data)         /*Write a byte the SPI bus*/
+#define LV_DRV_DISP_SPI_WR_ARRAY(addr, n) spi_wr_mem(addr, n)  /*Write 'n' bytes to SPI bus from 'adr'*/
+#define LV_DRV_DISP_SPI_FREQ(val)         spi_set_freq(val)    /*Set frequency*/
+#define LV_DRV_DISP_SPI_MODE(bits, mode)  spi_mode(bits, mode) /*Set bits and mode*/
 
 /*------------------
  *  Parallel port
@@ -190,6 +191,7 @@
 #if USE_ST7789
 #  define ST7789_HOR_RES      LV_HOR_RES
 #  define ST7789_VER_RES      LV_VER_RES
+
 // #  define R61581_HSPL         0       /*HSYNC signal polarity*/
 // #  define R61581_HSL          10      /*HSYNC length (Not Implemented)*/
 // #  define R61581_HFP          10      /*Horitontal Front poarch (Not Implemented)*/
@@ -201,7 +203,10 @@
 // #  define R61581_DPL          0       /*DCLK signal polarity*/
 // #  define R61581_EPL          1       /*ENABLE signal polarity*/
 // #  define R61581_ORI          0       /*0, 180*/
-#  define ST7789_LV_COLOR_DEPTH 16    /*Fix 16 bit*/
+#  define ST7789_SPI_BITS        8          /*8 Bit*/
+#  define ST7789_SPI_MODE        2          /*Mode 2*/
+#  define ST7789_SPI_BAUD        12000000    /*12 MHz*/
+#  define ST7789_LV_COLOR_DEPTH  16    /*Fix 16 bit*/
 #endif  /*USE_ST7789*/
 
 /*------------------------------------------
