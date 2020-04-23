@@ -710,6 +710,9 @@ int main()
 
   ticker.attach(callback(&lvl_ticker_func), TICKER_TIME);
 
+  events::EventQueue queue;
+  queue.dispatch_forever();
+
     // mySPI.format(8, 1); // Mode 1.
     // mySPI.frequency(8000000);
     // display = new Adafruit_SSD1306_Spi(mySPI, P0_16, P0_17, P0_14 , 128, 64);
