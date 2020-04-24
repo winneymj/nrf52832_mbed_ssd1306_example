@@ -25,6 +25,7 @@
 #define TICKER_TIME 0.001 * LVGL_TICK
 
 Ticker ticker;
+DigitalOut _led1(LED1);
 
 #define SSD1306_SWITCHCAPVCC true
 
@@ -697,20 +698,41 @@ int main()
   st7789_init();
   // display.init();
 
+  printf("main: st7789_init() done\r\n");
+
   lv_init();
+  printf("main: lv_init() done\r\n");
   static lv_disp_buf_t disp_buf;
   static lv_color_t buf[LV_HOR_RES_MAX * 6];
   lv_disp_buf_init(&disp_buf, buf, NULL, LV_HOR_RES_MAX * 6);
+  printf("main: lv_disp_buf_init() done\r\n");
 
   lv_disp_drv_t disp_drv;
   lv_disp_drv_init(&disp_drv);
-  disp_drv.flush_cb = st7789_flush;
-  disp_drv.buffer = &disp_buf;
-  lv_disp_drv_register(&disp_drv);
+  // disp_drv.flush_cb = st7789_flush;
+  // disp_drv.buffer = &disp_buf;
+  // lv_disp_drv_register(&disp_drv);
 
   ticker.attach(callback(&lvl_ticker_func), TICKER_TIME);
 
   events::EventQueue queue;
+
+  _led1 = 0;
+  while (true) {
+    st7789_init();
+    wait_ms(1000); // Pause for 1 seconds
+  _led1 = !_led1;
+  }
+
+  printf("main: 1\r\n");
+  _led1 = 1;
+  wait_ms(2000); // Pause for 2 seconds
+  printf("main: 2\r\n");
+  _led1 = 0;
+  wait_ms(2000); // Pause for 2 seconds
+  _led1 = 1;
+  printf("main: 3\r\n");
+
   queue.dispatch_forever();
 
     // mySPI.format(8, 1); // Mode 1.

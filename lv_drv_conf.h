@@ -205,7 +205,7 @@
 // #  define R61581_ORI          0       /*0, 180*/
 #  define ST7789_SPI_BITS        8          /*8 Bit*/
 #  define ST7789_SPI_MODE        2          /*Mode 2*/
-#  define ST7789_SPI_BAUD        12000000    /*12 MHz*/
+#  define ST7789_SPI_BAUD        8000000    /*8 MHz max on nrf52832*/
 #  define ST7789_LV_COLOR_DEPTH  16    /*Fix 16 bit*/
 #endif  /*USE_ST7789*/
 
