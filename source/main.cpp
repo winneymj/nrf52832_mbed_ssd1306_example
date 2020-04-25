@@ -695,7 +695,7 @@ int main()
   printf("\r\n main: ENTER \r\n\r\n");
 
   // Initalize the display driver st7789
-  st7789_init();
+  // st7789_init();
   // display.init();
 
   printf("main: st7789_init() done\r\n");
@@ -717,11 +717,28 @@ int main()
 
   events::EventQueue queue;
 
+  st7789_init();
+  st7789_init();
+
+#define WHITE_COLOUR 0xFFFF
+#define BLACK_COLOUR 0x0000
+#define RED_COLOUR   0xF800
+#define GREEN_COLOUR 0x07E0
+#define BLUE_COLOUR  0x001F
+
   _led1 = 0;
   while (true) {
-    st7789_init();
     wait_ms(1000); // Pause for 1 seconds
-  _led1 = !_led1;
+    st7789_fillRect(40, 40, 100, 50, BLACK_COLOUR);
+    wait_ms(1000); // Pause for 1 seconds
+    st7789_fillRect(40, 40, 100, 50, WHITE_COLOUR);
+    wait_ms(1000); // Pause for 1 seconds
+    st7789_fillRect(40, 40, 100, 50, RED_COLOUR);
+    wait_ms(1000); // Pause for 1 seconds
+    st7789_fillRect(40, 40, 100, 50, GREEN_COLOUR);
+    wait_ms(1000); // Pause for 1 seconds
+    st7789_fillRect(40, 40, 100, 50, BLUE_COLOUR);
+    _led1 = !_led1;
   }
 
   printf("main: 1\r\n");
@@ -732,7 +749,6 @@ int main()
   wait_ms(2000); // Pause for 2 seconds
   _led1 = 1;
   printf("main: 3\r\n");
-
   queue.dispatch_forever();
 
     // mySPI.format(8, 1); // Mode 1.

@@ -18,8 +18,8 @@
  * DELAY INTERFACE
  *********************/
 #define LV_DRV_DELAY_INCLUDE  <stdint.h>            /*Dummy include by default*/
-#define LV_DRV_DELAY_US(us)  /*delay_us(us)*/       /*Delay the given number of microseconds*/
-#define LV_DRV_DELAY_MS(ms)  /*delay_ms(ms)*/       /*Delay the given number of milliseconds*/
+#define LV_DRV_DELAY_US(us)   delay_us(us)          /*Delay the given number of microseconds*/
+#define LV_DRV_DELAY_MS(ms)   delay_ms(ms)          /*Delay the given number of milliseconds*/
 
 /*********************
  * DISPLAY INTERFACE
@@ -191,7 +191,8 @@
 #if USE_ST7789
 #  define ST7789_HOR_RES      LV_HOR_RES
 #  define ST7789_VER_RES      LV_VER_RES
-
+#  define ST7789_XSTART          0
+#  define ST7789_YSTART          40
 // #  define R61581_HSPL         0       /*HSYNC signal polarity*/
 // #  define R61581_HSL          10      /*HSYNC length (Not Implemented)*/
 // #  define R61581_HFP          10      /*Horitontal Front poarch (Not Implemented)*/
@@ -203,10 +204,10 @@
 // #  define R61581_DPL          0       /*DCLK signal polarity*/
 // #  define R61581_EPL          1       /*ENABLE signal polarity*/
 // #  define R61581_ORI          0       /*0, 180*/
-#  define ST7789_SPI_BITS        8          /*8 Bit*/
-#  define ST7789_SPI_MODE        2          /*Mode 2*/
-#  define ST7789_SPI_BAUD        8000000    /*8 MHz max on nrf52832*/
-#  define ST7789_LV_COLOR_DEPTH  16    /*Fix 16 bit*/
+#  define ST7789_SPI_BITS        9       /*8 Bit*/
+#  define ST7789_SPI_MODE        2       /*Mode 2*/
+#  define ST7789_SPI_BAUD        8000000 /*8 MHz max on nrf52832*/
+#  define ST7789_LV_COLOR_DEPTH  16      /*Fix 16 bit*/
 #endif  /*USE_ST7789*/
 
 /*------------------------------------------
