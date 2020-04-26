@@ -681,6 +681,7 @@ static const unsigned char logo_bmp[] =
 
 void lvl_ticker_func()
 {
+  // printf("lvl_ticker_func: ENTER \r\n");
   //Call lv_tick_inc(x) every x milliseconds in a Timer or Task (x should be between 1 and 10). 
   //It is required for the internal timing of LittlevGL.
   lv_tick_inc(LVGL_TICK);
@@ -690,8 +691,24 @@ void lvl_ticker_func()
   lv_task_handler();
 }
 
+void my_disp_flush(struct _disp_drv_t * disp_drv, const lv_area_t * area, lv_color_t * color_p)
+{
+  _led1 = !_led1;
+  printf("flushing,x=%d->%d,%d->%d,0x%X\r\n", area->x1, area->x2, area->y1, area->y2, color_p->full);
+    // int32_t x, y;
+    // for(y = area->y1; y <= area->y2; y++) {
+    //     for(x = area->x1; x <= area->x2; x++) {
+    //         set_pixel(x, y, *color_p);  /* Put a pixel to the display.*/
+    //         color_p++;
+    //     }
+    // }
+
+    lv_disp_flush_ready(disp_drv);         /* Indicate you are ready with the flushing*/
+}
+
 int main()
 {
+  _led1 = 0;
   printf("\r\n main: ENTER \r\n\r\n");
 
   // Initalize the display driver st7789
@@ -709,12 +726,15 @@ int main()
 
   lv_disp_drv_t disp_drv;
   lv_disp_drv_init(&disp_drv);
-  // disp_drv.flush_cb = st7789_flush;
-  // disp_drv.buffer = &disp_buf;
-  // lv_disp_drv_register(&disp_drv);
+  disp_drv.flush_cb = st7789_flush;
+  // disp_drv.flush_cb = my_disp_flush;
+  disp_drv.buffer = &disp_buf;
+  lv_disp_drv_register(&disp_drv);
+  printf("main: lv_disp_drv_register() done\r\n");
 
   ticker.attach(callback(&lvl_ticker_func), TICKER_TIME);
 
+  printf("main: ticker.attach() done\r\n");
   events::EventQueue queue;
 
   st7789_init();
@@ -725,11 +745,14 @@ int main()
 #define RED_COLOUR   0xF800
 #define GREEN_COLOUR 0x07E0
 #define BLUE_COLOUR  0x001F
+#define XXXX_COLOUR  0x0A0A
 
-  _led1 = 0;
   while (true) {
+    st7789_drawPixel(120, 200, 0xFFFF);
+    st7789_drawPixel(120, 30, 0xFFFF);
+    st7789_drawFastHLine(0, 120, 239, 0xFFFF);
     wait_ms(1000); // Pause for 1 seconds
-    st7789_fillRect(40, 40, 100, 50, BLACK_COLOUR);
+    st7789_fillRect(40, 40, 100, 50, XXXX_COLOUR);
     wait_ms(1000); // Pause for 1 seconds
     st7789_fillRect(40, 40, 100, 50, WHITE_COLOUR);
     wait_ms(1000); // Pause for 1 seconds
@@ -738,7 +761,7 @@ int main()
     st7789_fillRect(40, 40, 100, 50, GREEN_COLOUR);
     wait_ms(1000); // Pause for 1 seconds
     st7789_fillRect(40, 40, 100, 50, BLUE_COLOUR);
-    _led1 = !_led1;
+    // _led1 = !_led1;
   }
 
   printf("main: 1\r\n");
