@@ -694,14 +694,14 @@ void lvl_ticker_func()
 void my_disp_flush(struct _disp_drv_t * disp_drv, const lv_area_t * area, lv_color_t * color_p)
 {
   _led1 = !_led1;
-  printf("flushing,x=%d->%d,%d->%d,0x%X\r\n", area->x1, area->x2, area->y1, area->y2, color_p->full);
-    // int32_t x, y;
-    // for(y = area->y1; y <= area->y2; y++) {
-    //     for(x = area->x1; x <= area->x2; x++) {
-    //         set_pixel(x, y, *color_p);  /* Put a pixel to the display.*/
-    //         color_p++;
-    //     }
-    // }
+  // printf("flushing,x=%d->%d,%d->%d,0x%X\r\n", area->x1, area->x2, area->y1, area->y2, color_p->full);
+    int32_t x, y;
+    for(y = area->y1; y <= area->y2; y++) {
+        for(x = area->x1; x <= area->x2; x++) {
+            st7789_drawPixel(x, y, 0xFFFF /*color_p->full*/);  /* Put a pixel to the display.*/
+            color_p++;
+        }
+    }
 
     lv_disp_flush_ready(disp_drv);         /* Indicate you are ready with the flushing*/
 }
@@ -710,6 +710,9 @@ int main()
 {
   _led1 = 0;
   printf("\r\n main: ENTER \r\n\r\n");
+
+  st7789_init();
+  st7789_init();
 
   // Initalize the display driver st7789
   // st7789_init();
@@ -736,9 +739,6 @@ int main()
 
   printf("main: ticker.attach() done\r\n");
   events::EventQueue queue;
-
-  st7789_init();
-  st7789_init();
 
 #define WHITE_COLOUR 0xFFFF
 #define BLACK_COLOUR 0x0000
