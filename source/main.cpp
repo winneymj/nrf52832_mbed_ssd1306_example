@@ -706,6 +706,52 @@ void my_disp_flush(struct _disp_drv_t * disp_drv, const lv_area_t * area, lv_col
     lv_disp_flush_ready(disp_drv);         /* Indicate you are ready with the flushing*/
 }
 
+void lv_ex_arc_1(void) 
+{
+  /*Create style for the Arcs*/
+  static lv_style_t style;
+  lv_style_copy(&style, &lv_style_plain);
+  style.line.color = LV_COLOR_BLUE;           /*Arc color*/
+  style.line.width = 8;                       /*Arc width*/
+
+  /*Create an Arc*/
+  lv_obj_t * arc = lv_arc_create(lv_scr_act(), NULL);
+  lv_arc_set_style(arc, LV_ARC_STYLE_MAIN, &style);          /*Use the new style*/
+  lv_arc_set_angles(arc, 90, 60);
+  lv_obj_set_size(arc, 150, 150);
+  lv_obj_align(arc, NULL, LV_ALIGN_CENTER, 0, 0);
+}
+
+void lv_ex_line_1(void)
+{
+    /*Create an array for the points of the line*/
+    static lv_point_t line_points[] = { {5, 5}, {70, 70}, {120, 10}, {180, 60}, {240, 10} };
+
+    /*Create new style (thick dark blue)*/
+    static lv_style_t style_line;
+    lv_style_copy(&style_line, &lv_style_plain);
+    style_line.line.color = LV_COLOR_MAROON;
+    style_line.line.width = 8;
+    style_line.line.rounded = 1;
+
+    /*Copy the previous line and apply the new style*/
+    lv_obj_t * line1;
+    line1 = lv_line_create(lv_scr_act(), NULL);
+    lv_line_set_points(line1, line_points, 5);     /*Set the points*/
+    lv_line_set_style(line1, LV_LINE_STYLE_MAIN, &style_line);
+    lv_obj_align(line1, NULL, LV_ALIGN_CENTER, 0, 0);
+}
+
+void lv_ex_ta_1(void)
+{
+    lv_obj_t *ta1 = lv_ta_create(lv_scr_act(), NULL);
+    lv_obj_set_size(ta1, 150, 100);
+    lv_obj_align(ta1, NULL, LV_ALIGN_CENTER, 0, 0);
+    lv_ta_set_cursor_type(ta1, LV_CURSOR_BLOCK);
+    lv_ta_set_text(ta1, "A text in a Text Area");    /*Set an initial text*/
+    // lv_obj_set_event_cb(ta1, event_handler);
+}
+
 int main()
 {
   _led1 = 0;
@@ -747,31 +793,33 @@ int main()
 #define BLUE_COLOUR  0x001F
 #define XXXX_COLOUR  0x0A0A
 
-  while (true) {
-    st7789_drawPixel(120, 200, 0xFFFF);
-    st7789_drawPixel(120, 30, 0xFFFF);
-    st7789_drawFastHLine(0, 120, 239, 0xFFFF);
-    wait_ms(1000); // Pause for 1 seconds
-    st7789_fillRect(40, 40, 100, 50, XXXX_COLOUR);
-    wait_ms(1000); // Pause for 1 seconds
-    st7789_fillRect(40, 40, 100, 50, WHITE_COLOUR);
-    wait_ms(1000); // Pause for 1 seconds
-    st7789_fillRect(40, 40, 100, 50, RED_COLOUR);
-    wait_ms(1000); // Pause for 1 seconds
-    st7789_fillRect(40, 40, 100, 50, GREEN_COLOUR);
-    wait_ms(1000); // Pause for 1 seconds
-    st7789_fillRect(40, 40, 100, 50, BLUE_COLOUR);
-    // _led1 = !_led1;
-  }
+  lv_ex_arc_1();
+  lv_ex_line_1();
+  lv_ex_ta_1();
+  // while (true) {
+  //   st7789_drawPixel(120, 200, 0xFFFF);
+  //   st7789_drawPixel(120, 30, 0xFFFF);
+  //   st7789_drawFastHLine(0, 120, 239, 0xFFFF);
+  //   wait_ms(1000); // Pause for 1 seconds
+  //   st7789_fillRect(40, 40, 100, 50, XXXX_COLOUR);
+  //   wait_ms(1000); // Pause for 1 seconds
+  //   st7789_fillRect(40, 40, 100, 50, WHITE_COLOUR);
+  //   wait_ms(1000); // Pause for 1 seconds
+  //   st7789_fillRect(40, 40, 100, 50, RED_COLOUR);
+  //   wait_ms(1000); // Pause for 1 seconds
+  //   st7789_fillRect(40, 40, 100, 50, GREEN_COLOUR);
+  //   wait_ms(1000); // Pause for 1 seconds
+  //   st7789_fillRect(40, 40, 100, 50, BLUE_COLOUR);
+  // }
 
-  printf("main: 1\r\n");
-  _led1 = 1;
-  wait_ms(2000); // Pause for 2 seconds
-  printf("main: 2\r\n");
-  _led1 = 0;
-  wait_ms(2000); // Pause for 2 seconds
-  _led1 = 1;
-  printf("main: 3\r\n");
+  // printf("main: 1\r\n");
+  // _led1 = 1;
+  // wait_ms(2000); // Pause for 2 seconds
+  // printf("main: 2\r\n");
+  // _led1 = 0;
+  // wait_ms(2000); // Pause for 2 seconds
+  // _led1 = 1;
+  // printf("main: 3\r\n");
   queue.dispatch_forever();
 
     // mySPI.format(8, 1); // Mode 1.

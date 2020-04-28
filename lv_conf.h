@@ -33,7 +33,7 @@
 
 /* Swap the 2 bytes of RGB565 color.
  * Useful if the display has a 8 bit interface (e.g. SPI)*/
-#define LV_COLOR_16_SWAP   0
+#define LV_COLOR_16_SWAP   1
 
 /* 1: Enable screen transparency.
  * Useful for OSD or other overlapping GUIs.
@@ -446,7 +446,7 @@ typedef void * lv_obj_user_data_t;
 #endif
 
 /*Container (dependencies: -*/
-#define LV_USE_CONT     0
+#define LV_USE_CONT     1
 
 /*Color picker (dependencies: -*/
 #define LV_USE_CPICKER   0
@@ -475,7 +475,7 @@ typedef void * lv_obj_user_data_t;
 #define LV_USE_KB       0
 
 /*Label (dependencies: -*/
-#define LV_USE_LABEL    0
+#define LV_USE_LABEL    1
 #if LV_USE_LABEL != 0
 /*Hor, or ver. scroll speed [px/sec] in 'LV_LABEL_LONG_ROLL/ROLL_CIRC' mode*/
 #  define LV_LABEL_DEF_SCROLL_SPEED       25
@@ -510,7 +510,7 @@ typedef void * lv_obj_user_data_t;
 #define LV_USE_MBOX     0
 
 /*Page (dependencies: lv_cont)*/
-#define LV_USE_PAGE     0
+#define LV_USE_PAGE     1
 #if LV_USE_PAGE != 0
 /*Focus default animation time [ms] (0: no animation)*/
 #  define LV_PAGE_DEF_ANIM_TIME     400
@@ -544,7 +544,7 @@ typedef void * lv_obj_user_data_t;
 #define LV_USE_SW       0
 
 /*Text area (dependencies: lv_label, lv_page)*/
-#define LV_USE_TA       0
+#define LV_USE_TA       1
 #if LV_USE_TA != 0
 #  define LV_TA_DEF_CURSOR_BLINK_TIME 400     /*ms*/
 #  define LV_TA_DEF_PWD_SHOW_TIME     1500    /*ms*/
