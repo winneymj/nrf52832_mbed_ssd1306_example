@@ -752,6 +752,150 @@ void lv_ex_ta_1(void)
     // lv_obj_set_event_cb(ta1, event_handler);
 }
 
+static int32_t sHours = 4;
+static int32_t sMinutes = 45;
+
+static int32_t getAngleForHour(int hour) {
+  return (hour * 360) / 12;
+}
+
+static int32_t getAngleForMinutes(int minutes) {
+  return (minutes * 360) / 60;
+}
+
+#define INSET 5
+#define HOURS_RADIUS 10
+#ifndef M_PI
+#define M_PI           3.14159265358979323846
+#endif
+
+lv_point_t pointFromPolar(lv_area_t &bounds, int angleInDegrees) {
+  lv_point_t retVal;
+
+  int w = lv_area_get_width(&bounds);
+  int h = lv_area_get_height(&bounds);
+  int radius = w / 2;
+  lv_coord_t cx = bounds.x1 + (w / 2);
+  lv_coord_t cy = bounds.y1 + (h / 2);
+  // printf("pointFromPolar angleInDegrees=%d\r\n", angleInDegrees);
+  // printf("pointFromPolar radius=%d\r\n", radius);
+  // printf("pointFromPolar bounds=%d,%d,%d,%d\r\n", bounds.x1, bounds.y1, bounds.x2, bounds.y2);
+
+  // // Convert from degrees to radians via multiplication by PI/180        
+  // float x = (float)(radius * cos(angleInDegrees * M_PI / 180.0)) + bounds.x1;
+  // float y = (float)(radius * sin(angleInDegrees * M_PI / 180.0)) + bounds.y1;
+  // Convert from degrees to radians via multiplication by PI/180        
+  float x = (float) cx + (radius * cos(angleInDegrees / (180.0 / M_PI)));
+  float y = (float) cy + (radius * sin(angleInDegrees / (180.0 / M_PI)));
+  // printf("pointFromPolar x=%f\r\n", x);
+  // printf("pointFromPolar y=%f\r\n", y);
+  retVal.x = (lv_coord_t)x;
+  retVal.y = (lv_coord_t)y;
+  return retVal;
+}
+
+static lv_design_cb_t old_btn_design;
+
+bool new_btn_design(lv_obj_t * obj, const  lv_area_t * mask, lv_design_mode_t mode)
+{
+    if(mode == LV_DESIGN_COVER_CHK) {
+      /*Use the original function for cover check*/
+      return old_btn_design(obj, mask, mode);
+    } else if(mode == LV_DESIGN_DRAW_MAIN) {
+      /*Draw the original button first*/
+      old_btn_design(obj, mask, mode);
+
+      /*Draw a rectangle*/
+      // void *ext = lv_obj_get_ext_attr(obj);
+      printf("new_rect_design called\r\n");
+      // lv_area_t newCoords = {obj->coords.x1 + 5, obj->coombed rds.y1 + 5, obj->coords.x2 - 5, obj->coords.y2 - 5};
+      // char buf[32];
+      // sprintf(buf, "Temp\n%d", 10);
+      // lv_draw_label(&obj->coords, mask, &lv_style_btn_rel, lv_obj_get_opa_scale(obj), buf, LV_TXT_FLAG_CENTER, NULL);
+      // lv_draw_rect(&newCoords, mask, lv_obj_get_style(obj), lv_obj_get_opa_scale(obj));
+    } else if(mode == LV_DESIGN_DRAW_POST) {
+      /*Use the original function for post draw*/
+      old_btn_design(obj, mask, mode);
+    }
+
+    return true;
+}
+
+lv_area_t bounds_inset(lv_area_t *bounds, int offset) {
+  lv_area_t retVal = {bounds->x1 + offset, bounds->y1 + offset, bounds->x2 - offset, bounds->y2 - offset};
+  return retVal;
+}
+
+void pebble_circle_watchface(void)
+{
+  // 12 hours only with maximim size
+  sHours -= (sHours > 12) ? 12 : 0;
+
+  // Minutes are expanding circle arc
+  int minuteAngle = getAngleForMinutes(sMinutes);
+
+  /*Create style for the Arcs*/
+  static lv_style_t style;
+  lv_style_copy(&style, &lv_style_plain);
+  style.line.color = LV_COLOR_BLUE;           /*Arc color*/
+  style.line.width = 20;                       /*Arc width*/
+
+  lv_obj_t *scr = lv_scr_act();
+  // Get bounds
+  lv_area_t bounds = scr->coords;
+
+  /*Create an Arc*/
+  lv_obj_t * arc = lv_arc_create(lv_scr_act(), NULL);
+  lv_arc_set_style(arc, LV_ARC_STYLE_MAIN, &style);          /*Use the new style*/
+  lv_arc_set_angles(arc, minuteAngle - 180, 0);
+  // lv_arc_set_angles(arc, minuteAngle, 180);
+  lv_obj_set_size(arc, bounds.x2 - (4* INSET), bounds.y2 - (4* INSET));
+  lv_obj_align(arc, NULL, LV_ALIGN_CENTER, 0, 0);
+
+  /*Create style for the dots*/
+  static lv_style_t styleBlack;
+    lv_style_copy(&styleBlack, &lv_style_plain);
+    styleBlack.body.main_color = LV_COLOR_BLACK;
+    styleBlack.body.grad_color = LV_COLOR_BLACK;
+    // styleDots.line.width = 10;
+    // styleDots.line.color = LV_COLOR_BLACK;
+    styleBlack.body.radius = LV_RADIUS_CIRCLE;
+    // styleDots.body.border.width = 4;
+    // styleDots.body.border.color = LV_COLOR_RED;
+
+  static lv_style_t styleWhite;
+    lv_style_copy(&styleWhite, &styleBlack);
+    styleWhite.body.main_color = LV_COLOR_WHITE;
+    styleWhite.body.grad_color = LV_COLOR_WHITE;
+
+  // lv_draw_fill(&rectArea, &bounds, LV_COLOR_BLACK, LV_OPA_MIN);
+  // lv_draw_rect(&rectArea, &bounds, &styleDots, LV_OPA_MAX);
+
+  // create new smaller bounds object using the style margin
+  lv_area_t newBounds = bounds_inset(&bounds, 2.2 * HOURS_RADIUS);
+
+  // Hours are dots
+  for (int i = 0; i < 12; i++) {
+    int hourPos = getAngleForHour(i);
+    lv_point_t pos = pointFromPolar(newBounds, hourPos);
+    // printf("pointFromPolar = %d, %d\r\n", pos.x, pos.y);
+    // lv_draw_rect(&rectArea, &bounds, &styleDots, 0);
+    lv_obj_t *btn = lv_obj_create(lv_scr_act(), NULL);
+    // old_btn_design = lv_obj_get_design_cb(btn);
+    // lv_obj_set_design_cb(btn, new_btn_design);
+    lv_obj_set_style(btn, i <= sHours ? &styleWhite : &styleBlack);
+    lv_obj_set_size(btn, HOURS_RADIUS, HOURS_RADIUS);
+    lv_obj_set_pos(btn, pos.x - (HOURS_RADIUS / 2), pos.y - (HOURS_RADIUS / 2));
+  }
+
+  lv_obj_t *btn2 = lv_obj_create(lv_scr_act(), NULL);
+  // old_btn_design = lv_obj_get_design_cb(btn);
+  // lv_obj_set_design_cb(btn, new_btn_design);
+  lv_obj_set_style(btn2, &styleBlack);
+  lv_obj_set_size(btn2, HOURS_RADIUS, HOURS_RADIUS);
+  lv_obj_set_pos(btn2, 115, 5);
+}
+
 void lv_ex_page_1(void)
 {
     /*Create a scroll bar style*/
@@ -790,14 +934,8 @@ void lv_ex_page_1(void)
     lv_obj_t * label = lv_label_create(page, NULL);
     lv_label_set_long_mode(label, LV_LABEL_LONG_BREAK);            /*Automatically break long lines*/
     lv_obj_set_width(label, lv_page_get_fit_width(page));          /*Set the label width to max value to not show hor. scroll bars*/
-    lv_label_set_text(label, "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\n"
-                             "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n"
-                             "Ut enim ad minim veniam, quis nostrud exercitation ullamco\n"
-                             "laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure\n"
-                             "dolor in reprehenderit in voluptate velit esse cillum dolore\n"
-                             "eu fugiat nulla pariatur.\n"
-                             "Excepteur sint occaecat cupidatat non proident, sunt in culpa\n"
-                             "qui officia deserunt mollit anim id est laborum.");
+    lv_label_set_text(label, "this is a long piece of text to try out how the label text is displayed\n"
+                             "wonder how well it works?");
 }
 
 int main()
@@ -841,10 +979,11 @@ int main()
 #define BLUE_COLOUR  0x001F
 #define XXXX_COLOUR  0x0A0A
 
+  pebble_circle_watchface();
   // lv_ex_arc_1();
   // lv_ex_line_1();
   // lv_ex_ta_1();
-  lv_ex_page_1();
+  // lv_ex_page_1();
   // while (true) {
   //   st7789_drawPixel(120, 200, 0xFFFF);
   //   st7789_drawPixel(120, 30, 0xFFFF);

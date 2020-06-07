@@ -4,6 +4,7 @@
         "vector": "cpp",
         "xstring": "cpp",
         "xutility": "cpp",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "cmath": "cpp"
     }
 }
